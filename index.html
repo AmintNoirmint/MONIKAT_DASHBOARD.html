@@ -1,19 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MONIKAT Dashboard</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MONIKAT Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.7.3/dist/web3.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: white;
+      text-align: center;
+    }
+    header {
+      background: linear-gradient(135deg, #ff3cac, #784ba0);
+      padding: 2rem 1rem;
+    }
+    h1 {
+      font-size: 3rem;
+      margin: 0;
+    }
+    p {
+      font-size: 1.2rem;
+      margin-top: 0.5rem;
+    }
+    #wallet-status {
+      margin-top: 2rem;
+      font-size: 1rem;
+    }
+    img {
+      margin-top: 2rem;
+      max-width: 200px;
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>MONIKAT</h1>
-        <p>Money and Kat has always been a Lucrative Affair!</p>
-    </header>
-    <main>
-        <p>Scan the QR below to view the official dashboard:</p>
-        <img src="monikat-dashboard-qr.png" alt="MONIKAT QR Code" width="240"/>
-    </main>
+  <header>
+    <h1>MONIKAT</h1>
+    <p>Money and Kat has always been a Lucrative Affair!</p>
+  </header>
+  <div>
+    <p>Scan the QR below to view the official dashboard:</p>
+    <img src="monikat-dashboard-qr.png" alt="MONIKAT QR Code">
+    <div id="wallet-status"></div>
+  </div>
+  <script>
+    async function connectWallet() {
+      if (window.ethereum) {
+        const web3 = new Web3(window.ethereum);
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          const account = accounts[0];
+          const balanceWei = await web3.eth.getBalance(account);
+          const balanceEth = web3.utils.fromWei(balanceWei, 'ether');
+          document.getElementById("wallet-status").innerText = 
+            "Wallet: " + account + "\nBalance: " + balanceEth + " ETH";
+        } catch (error) {
+          document.getElementById("wallet-status").innerText = "Wallet connection failed.";
+        }
+      } else {
+        document.getElementById("wallet-status").innerText = "MetaMask not detected.";
+      }
+    }
+    connectWallet();
+  </script>
 </body>
 </html>
